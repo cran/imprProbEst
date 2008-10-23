@@ -1,0 +1,9 @@
+citHeader("To cite package imprProbEst in publications use:")
+
+citEntry(entry="Manual",
+         title = "imprProbEst: Minimum distance estimation in an imprecise probability model",
+         author = personList(as.person("R. Hable")),
+         language = "English",
+         year = 2008,
+         type = "R package",
+textVersion = paste("Hable, R. (2008).", "imprProbEst: Minimum distance estimation in an imprecise probability model.", "R package."))
