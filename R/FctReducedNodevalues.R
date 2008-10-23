@@ -2,16 +2,16 @@
 function(n,m,s,x.nodevalues,omega.nodevalues){
 
   # Load the R package 'inline':
-  
+
   library(inline)
-  
+
   # The variables which are passed to the C++ programm:
 
   Variables <- signature(n="integer", m="integer", s="integer",
     vecofnodevalues="numeric",
     xrem="integer", omegarem="integer")
 
-  # The C++ - source code:
+  # The C - source code:
 
   Code <- " int i,j,l; int compare;
     int zrem[*n+*m];  /* This is a vector that will contain xrem and omegarem */
@@ -93,12 +93,12 @@ function(n,m,s,x.nodevalues,omega.nodevalues){
     for(i=0; i<*n; i++){xrem[i]=zrem[i];}
     for(i=*n; i<*n+*m; i++){omegarem[i-*n]=zrem[i];}
   "
-  
-  
+
+
   # Use the R package 'inline':
 
-  FctDelNotes <- cfunction(Variables, Code, language="C++", convention=".C")
-  
+  FctDelNotes <- cfunction(Variables, Code, language="C", convention=".C")
+
   # Preparing some variables:
 
   nodevalues <- cbind(x.nodevalues,omega.nodevalues)
@@ -107,10 +107,10 @@ function(n,m,s,x.nodevalues,omega.nodevalues){
   omegarem <- matrix(1, ncol=1, nrow=m)
 
   # Use of the function 'FctDelNotes':
-  
+
   DelNotes <- FctDelNotes(n,m,s,vecofnodevalues,xrem,omegarem)
   # DelNotes <- list(n,m,s,vecofnodevalues,xrem,omegarem)    Hiermit laest sich die C-Funktion ausschalten
- 
+
   x.rem <- matrix(DelNotes[[5]],ncol=1)   # this vector stores, which observations have occured how often
   omega.rem <- matrix(DelNotes[[6]],ncol=1)  # this is the vector which stores the remaining
                                              # additional supporting nodes
@@ -121,11 +121,11 @@ function(n,m,s,x.nodevalues,omega.nodevalues){
   x.nodevalues <- x.nodevalues[,x.rem!=0]   # the values of the functions f at the remaining observed nodes of x
   x.frequency <- x.rem[x.rem!=0]             # the (absolute) frequency of the observations at the remaining
                                             # observed nodes of x
-  
+
   omega.nodevalues <- omega.nodevalues[,omega.rem!=0]    # remaining additional supporting nodes omega
 
   # The return of the function 'FctReducedNodevalues'
-  
+
   list(x.nodevalues,x.frequency,omega.nodevalues,mr)
 }
 
